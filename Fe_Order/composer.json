@@ -1,0 +1,15 @@
+{
+    "name": "admin/fe_order",
+    "autoload": {
+        "psr-4": {
+            "Admin\\FeOrder\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "",
+            "email": "danhmcno1@gmail.com"
+        }
+    ],
+    "require": {}
+}
