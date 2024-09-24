@@ -1,4 +1,4 @@
-import { AlignLeftOutlined, CloseCircleFilled, ShoppingCartOutlined } from '@ant-design/icons';
+import { AlignLeftOutlined, CloseCircleFilled, ShoppingCartOutlined,  PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { Badge, Drawer } from 'antd';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -7,8 +7,7 @@ import Navigation from '../component/Navigation/Navigation';
 
 const Header = () => {
   const [visible, setVisible] = useState(false);
-  const { cart, addToCart , removeFromCart } = useProductContext(); // Lấy cart từ context
-
+  const { cart, removeFromCart, updateQuantity, getTotalPrice } = useProductContext(); // Lấy cart từ context
   const showDrawer = () => {
     setVisible(true);
   };
@@ -50,10 +49,22 @@ const Header = () => {
                                   <h3 className="cart-item-main__title text-[16px] line-clamp-1 text-type-1">
                                     <Link to={`/product/${item.id}`}>{item.name}</Link>
                                   </h3>
-                                  <span className="cart-item-man__price text-[15px] text-type-1 block mt-1">${item.price}</span>
-                                  <span className="cart-item-man__quantity text-[15px] text-type-1 block mt-1">Quantity: {item.quantity}</span>
+                                  <span className="cart-item-man__price text-[15px] text-type-1 block mt-1">${item.product_details && item.product_details.length > 0 ? `${item.product_details[0].price * item.quantity}` : 'N/A'}</span>
+                                  {/* Thêm các nút tăng giảm số lượng */}
+                                  <div className="cart-item-quantity-controls flex items-center mt-1">
+                                    <MinusCircleOutlined
+                                        className="text-red-500 cursor-pointer"
+                                        onClick={() => updateQuantity(item.id, 'decrease')}
+                                    />
+                                    <span className="mx-2">{item.quantity}</span>
+                                    <PlusCircleOutlined
+                                        className="text-green-500 cursor-pointer"
+                                        onClick={() => updateQuantity(item.id, 'increase')}
+                                    />
+                                  </div>
                                 </div>
                                 <div className="absolute right-5">
+                                  {/* Nút xóa sản phẩm khỏi giỏ hàng */}
                                   <button className="cursor-pointer btn-type-error" onClick={() => removeFromCart(item.id)}>
                                     <CloseCircleFilled />
                                   </button>
@@ -62,16 +73,26 @@ const Header = () => {
                             </div>
                         ))
                     ) : (
-                        <p>Giỏ hàng trống</p>
+                        <p>Your cart is empty.</p>
                     )}
                   </div>
                   <div className="mini-cart-action flex gap-2 items-center justify-evenly">
                     <div className="mini-cart-action-left">
-                      <h4 className='text-[14px] py-2 text-center'>Total: <span>${cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}</span></h4>
+                      <h4 className='text-[14px] py-2 text-center'>Total: <span> ${cart.reduce((acc, item) => {
+                        if (item.product_details && item.product_details.length > 0) {
+                          return acc + (item.product_details[0].price * item.quantity);
+                        }
+                        return acc;
+                      }, 0)}</span></h4>
                       <Link to="/cart" className="btn-type-3 rounded-md bg-red-400 p-2">View cart</Link>
                     </div>
                     <div className="mini-cart-action-right">
-                      <h4 className='text-[14px] py-2 text-center '>Total: <span>${cart.reduce((acc, item) => acc + (item.price * item.quantity), 0)}</span></h4>
+                      <h4 className='text-[14px] py-2 text-center '>Total: <span> ${cart.reduce((acc, item) => {
+                        if (item.product_details && item.product_details.length > 0) {
+                          return acc + (item.product_details[0].price * item.quantity);
+                        }
+                        return acc;
+                      }, 0)}</span></h4>
                       <Link to="/checkout" className="btn-type-4 bg-blue-400 p-2 rounded-md"><span>Checkout</span></Link>
                     </div>
                   </div>

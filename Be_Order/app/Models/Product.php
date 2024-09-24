@@ -15,4 +15,9 @@ class Product extends Model
     {
         return $this->hasMany(ProductDetail::class, 'product_id');
     }
+    public function getPriceAttribute()
+    {
+        // Kiểm tra nếu có productDetails và trả về giá
+        return $this->productDetails->first() ? $this->productDetails->first()->price : 0;
+    }
 }

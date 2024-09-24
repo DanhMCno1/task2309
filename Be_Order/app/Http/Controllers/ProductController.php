@@ -8,10 +8,9 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // Lấy tất cả sản phẩm
-        $products = Product::all();
+        // Lấy tất cả sản phẩm và chi tiết sản phẩm với eager loading
+        $products = Product::with('productDetails')->get();
 
-        // Trả về phản hồi JSON
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -20,3 +19,4 @@ class ProductController extends Controller
         ]);
     }
 }
+
